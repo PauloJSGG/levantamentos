@@ -1,13 +1,13 @@
 services:
-  web:
-    image: levantamentos
-    build: .
-    ports:
-      - "3000:3000"
-    depends_on:
-      - db
-    env_file:
-      - .env.production
+  # web:
+  #   image: levantamentos
+  #   build: .
+  #   ports:
+  #     - "3000:3000"
+  #   depends_on:
+  #     - db
+  #   env_file:
+  #     - .env.production
 
   db:
     image: postgres

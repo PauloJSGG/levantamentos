@@ -1,142 +1,263 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider      = "prisma-client-js"
   binaryTargets = ["native", "linux-musl"]
 }
 
 datasource db {
-  provider = "postgresql"
-  // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
-  // Further reading:
-  // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
-  // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
-model Account {
-  id                String  @id @default(cuid())
-  userId            String
-  type              String
-  provider          String
-  providerAccountId String
-  refresh_token     String? // @db.Text
-  access_token      String? // @db.Text
-  expires_at        Int?
-  token_type        String?
-  scope             String?
-  id_token          String? // @db.Text
-  session_state     String?
-  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+model account {
+  id            Int
+  user_id       Int
+  type          String? @db.VarChar(255)
+  refresh_token String? @db.VarChar(255)
+  acess_token   String? @db.VarChar(255)
+  expires_at    Float?  @db.Float
+  token_type    String? @db.VarChar(255)
+  scope         String? @db.VarChar(255)
+  id_token      String? @db.VarChar(255)
+  session_state String? @db.VarChar(255)
+  user          user    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_Account_user1")
 
-  @@unique([provider, providerAccountId])
+  @@id([id, user_id])
+  @@index([user_id], map: "fk_Account_user1_idx")
 }
 
-model Session {
-  id           String   @id @default(cuid())
-  sessionToken String   @unique
-  userId       String
-  expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+model edificio {
+  id            Int
+  designacao    String?    @db.VarChar(255)
+  descricao     String?    @db.VarChar(255)
+  proposta_id   Int
+  foto_edificio String?    @db.Text
+  iluminacao_id Int
+  foto_id       Int
+  foto          foto       @relation(fields: [foto_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_edificio_foto1")
+  iluminacao    iluminacao @relation(fields: [iluminacao_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_edificio_iluminacao1")
+  proposta      proposta   @relation(fields: [proposta_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_edificios_propostas1")
+  espaco        espaco[]
+  piso          piso[]
+
+  @@id([id, proposta_id, iluminacao_id, foto_id])
+  @@index([foto_id], map: "fk_edificio_foto1_idx")
+  @@index([iluminacao_id], map: "fk_edificio_iluminacao1_idx")
+  @@index([proposta_id], map: "fk_edificios_propostas1_idx")
 }
 
-model VerificationToken {
-  identifier String
-  token      String   @unique
-  expires    DateTime
+model elevadores {
+  id               Int
+  ref_elevador     String    @unique(map: "ref_elevador_UNIQUE") @db.VarChar(45)
+  carga            Int
+  piso_id          Int
+  piso_edificio_id Int
+  dataCriacao      DateTime? @db.Timestamp(0)
+  foto_id          Int
+  foto             foto      @relation(fields: [foto_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_elevadores_foto1")
+  piso             piso      @relation(fields: [piso_id, piso_edificio_id], references: [id, edificio_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_elevadores_piso1")
 
-  @@unique([identifier, token])
+  @@id([id, piso_id, piso_edificio_id, foto_id])
+  @@index([foto_id], map: "fk_elevadores_foto1_idx")
+  @@index([piso_id, piso_edificio_id], map: "fk_elevadores_piso1_idx")
 }
 
-model User {
-  id            String     @id @default(cuid())
-  name          String?
-  email         String?    @unique
-  emailVerified DateTime?
-  image         String?
-  password      String
-  accounts      Account[]
-  sessions      Session[]
-  proposta      Proposta[]
+model envidracados {
+  id                   Int
+  quant_vao            Int
+  dataCriacao          DateTime?         @db.Timestamp(0)
+  tipo_envidracados_id Int
+  tipo_envidracados    tipo_envidracados @relation(fields: [tipo_envidracados_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_envidracados_tipo_envidracados1")
+  espaco               espaco[]
+
+  @@id([id, tipo_envidracados_id])
+  @@index([tipo_envidracados_id], map: "fk_envidracados_tipo_envidracados1_idx")
 }
 
-model Invite {
-  id    String @id @default(cuid())
-  email String
+model espaco {
+  id               Int
+  edificio_id      Int
+  piso_id          Int
+  numero           Int          @unique(map: "numero_UNIQUE") @default(autoincrement())
+  designacao       String?      @db.VarChar(255)
+  peDireito        Float        @db.Float
+  climatizado      Int          @db.TinyInt
+  util             Int          @db.TinyInt
+  numero_ocupantes Int?
+  ocupacao_id      Int
+  iluminacao_id    Int
+  envidracados_id  Int
+  sistemas_id      Int
+  foto_id          Int
+  envidracados     envidracados @relation(fields: [envidracados_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_espaco_envidracados1")
+  foto             foto         @relation(fields: [foto_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_espaco_foto1")
+  iluminacao       iluminacao   @relation(fields: [iluminacao_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_espaco_iluminacao1")
+  sistemas         sistemas     @relation(fields: [sistemas_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_espaco_sistemas1")
+  edificio         edificio     @relation(fields: [edificio_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_espacos_edificios1")
+  ocupacao         ocupacao     @relation(fields: [ocupacao_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_espacos_ocupacao1")
+  piso             piso         @relation(fields: [piso_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_espacos_pisos1")
+
+  @@id([id, edificio_id, piso_id, ocupacao_id, iluminacao_id, envidracados_id, sistemas_id, foto_id])
+  @@index([envidracados_id], map: "fk_espaco_envidracados1_idx")
+  @@index([foto_id], map: "fk_espaco_foto1_idx")
+  @@index([iluminacao_id], map: "fk_espaco_iluminacao1_idx")
+  @@index([sistemas_id], map: "fk_espaco_sistemas1_idx")
+  @@index([edificio_id], map: "fk_espacos_edificios1_idx")
+  @@index([ocupacao_id], map: "fk_espacos_ocupacao1_idx")
+  @@index([piso_id], map: "fk_espacos_pisos1_idx")
 }
 
-model Proposta {
-  id          String     @id @unique
-  criadoPor   User       @relation(fields: [criadoPorId], references: [id])
-  criadoPorId String
-  dataCriacao DateTime   @default(now())
-  edificios   Edificio[]
+model foto {
+  id                Int                 @id
+  caminhoRelativo   String?             @db.Text
+  dataCriacao       DateTime?           @db.Timestamp(0)
+  tipo              String?             @db.VarChar(255)
+  edificio          edificio[]
+  elevadores        elevadores[]
+  espaco            espaco[]
+  iluminacao        iluminacao[]
+  luminaria         luminaria[]
+  tipo_envidracados tipo_envidracados[]
 }
 
-model FotoEspaco {
-  id              Int      @id @default(autoincrement())
-  caminhoRelativo String
-  espaco          Espaco   @relation(fields: [espacoId], references: [id])
-  espacoId        Int
-  dataCriacao     DateTime @default(now())
-  tipo            TipoFoto
+model iluminacao {
+  id           Int
+  quantidade   Float      @db.Float
+  dataCriacao  DateTime?  @db.Timestamp(0)
+  luminaria_id Int
+  foto_id      Int
+  edificio     edificio[]
+  espaco       espaco[]
+  foto         foto       @relation(fields: [foto_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_iluminacao_foto1")
+  luminaria    luminaria  @relation(fields: [luminaria_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_iluminacao_luminaria1")
+
+  @@id([id, luminaria_id, foto_id])
+  @@index([foto_id], map: "fk_iluminacao_foto1_idx")
+  @@index([luminaria_id], map: "fk_iluminacao_luminaria1_idx")
 }
 
-enum TipoFoto {
-  Espaco
-  Iluminacao
-  Equipamento
+model luminaria {
+  id                 Int
+  ref_luminaria      String          @unique(map: "ref_luminaria_UNIQUE") @db.VarChar(45)
+  tipo_iluminacao_id Int
+  potencia_lampada   Float?          @db.Float
+  quant_lampadas     Int?
+  foto_id            Int
+  iluminacao         iluminacao[]
+  foto               foto            @relation(fields: [foto_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_luminaria_foto1")
+  tipo_iluminacao    tipo_iluminacao @relation(fields: [tipo_iluminacao_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_luminaria_tipo_iluminacao1")
+
+  @@id([id, tipo_iluminacao_id, foto_id])
+  @@index([foto_id], map: "fk_luminaria_foto1_idx")
+  @@index([tipo_iluminacao_id], map: "fk_luminaria_tipo_iluminacao1_idx")
 }
 
-model Espaco {
-  id                Int              @id @default(autoincrement())
-  designacao        String?
-  peDireito         Float?
-  climatizado       Boolean?
-  ocupacao          Int?
-  util              Boolean?
-  tipoEquipamento   TipoEquipamento? @relation(fields: [tipoEquipamentoId], references: [id])
-  tipoEquipamentoId Int?
-  tipoAtividade     TipoAtividade?
-  piso              Piso?            @relation(fields: [pisoId], references: [id])
-  pisoId            Int?
-  edificio          Edificio?        @relation(fields: [edificioId], references: [id])
-  edificioId        Int?
-  dataCriacao       DateTime         @default(now())
-  fotosEspaco       FotoEspaco[]
+model ocupacao {
+  id          Int      @id
+  atividade   String?  @db.VarChar(255)
+  perfil_ocup String?  @db.VarChar(255)
+  espaco      espaco[]
 }
 
-model Piso {
-  id         Int      @id @unique @default(autoincrement())
-  nome       String
-  espacos    Espaco[]
-  Edificio   Edificio @relation(fields: [edificioId], references: [id])
-  edificioId Int
+model piso {
+  id          Int
+  nome        String?      @db.VarChar(45)
+  edificio_id Int
+  elevadores  elevadores[]
+  espaco      espaco[]
+  edificio    edificio     @relation(fields: [edificio_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_pisos_edificios1")
+
+  @@id([id, edificio_id])
+  @@index([edificio_id], map: "fk_pisos_edificios1_idx")
 }
 
-model Edificio {
-  id         Int       @id @default(autoincrement())
-  designacao String
-  descricao  String
-  proposta   Proposta? @relation(fields: [propostaId], references: [id])
-  propostaId String?
-  pisos      Piso[]
-  espacos    Espaco[]
+model proposta {
+  id          Int
+  user_id     Int
+  dataCriacao DateTime?  @db.Timestamp(0)
+  edificio    edificio[]
+  user        user       @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_proposta_user1")
+
+  @@id([id, user_id])
+  @@index([user_id], map: "fk_proposta_user1_idx")
 }
 
-model TipoEquipamento {
-  id         Int      @id @default(autoincrement())
-  designacao String
-  descricao  String
-  espacos    Espaco[]
+model session {
+  id           Int
+  sessionToken String?   @db.VarChar(45)
+  user_id      Int
+  expires      DateTime? @db.Timestamp(0)
+  user         user      @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_Session_user")
+
+  @@id([id, user_id])
+  @@index([user_id], map: "fk_Session_user_idx")
 }
 
-enum TipoAtividade {
-  Sono
-  Descanso
-  Sedentaria
-  Moderada
-  LigeiramenteAlta
-  Alta
+model sistemas {
+  id               Int
+  quant_sistemas   Int
+  tipo_sistemas_id Int
+  dataCriacao      DateTime?     @db.Timestamp(0)
+  espaco           espaco[]
+  tipo_sistemas    tipo_sistemas @relation(fields: [tipo_sistemas_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_sistemas_tipo_sistemas1")
+
+  @@id([id, tipo_sistemas_id])
+  @@index([tipo_sistemas_id], map: "fk_sistemas_tipo_sistemas1_idx")
+}
+
+model tipo_envidracados {
+  id                   Int
+  ref_vao              String         @unique(map: "ref_vao_UNIQUE") @db.VarChar(45)
+  tipo_vao             String         @db.VarChar(255)
+  tipo_caixilharia     String         @db.VarChar(255)
+  tipo_vidro           String         @db.VarChar(255)
+  med_vidro            String?        @db.VarChar(255)
+  tipo_envidracadoscol String?        @db.VarChar(45)
+  foto_med             String?        @db.Text
+  protecoes_id         Int
+  foto_id              Int
+  envidracados         envidracados[]
+  foto                 foto           @relation(fields: [foto_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_tipo_envidracados_foto1")
+  tipo_protecoes       tipo_protecoes @relation(fields: [protecoes_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_tipo_envidracados_protecoes1")
+
+  @@id([id, protecoes_id, foto_id])
+  @@index([foto_id], map: "fk_tipo_envidracados_foto1_idx")
+  @@index([protecoes_id], map: "fk_tipo_envidracados_protecoes1_idx")
+}
+
+model tipo_iluminacao {
+  id        Int         @id
+  tipo      String?     @db.VarChar(255)
+  luminaria luminaria[]
+}
+
+model tipo_protecoes {
+  id                  Int                 @id
+  protecao_interior   String?             @db.VarChar(255)
+  protecao_exterior   String?             @db.VarChar(255)
+  protecao_intermedia String?             @db.VarChar(255)
+  tipo_envidracados   tipo_envidracados[]
+}
+
+model tipo_sistemas {
+  id            Int        @id
+  ref_sistema   String     @unique(map: "ref_sistema_UNIQUE") @db.VarChar(45)
+  nome          String?    @db.VarChar(255)
+  tipo          String?    @db.VarChar(255)
+  fonte_energia String?    @db.VarChar(255)
+  marca         String?    @db.VarChar(255)
+  modelo        String?    @db.VarChar(255)
+  funcao        String     @db.VarChar(45)
+  sistemas      sistemas[]
+}
+
+model user {
+  id            Int        @id
+  name          String?    @db.VarChar(255)
+  email         String?    @db.VarChar(255)
+  emailVerified DateTime?  @db.Timestamp(0)
+  image         String?    @db.Text
+  password      String?    @db.VarChar(200)
+  account       account[]
+  proposta      proposta[]
+  session       session[]
 }

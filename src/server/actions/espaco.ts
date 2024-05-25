@@ -36,7 +36,7 @@ const imageSchema = z.object({
     ),
 });
 
-const validateImage = async (file: File) => {
+// const validateImage = async (file: File) => {
 
 const saveImage = async (file: File) => {
   const arrayBuffer = await file.arrayBuffer();

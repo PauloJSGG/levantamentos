@@ -1,39 +1,33 @@
-'use client'
+"use client";
 
-import { useState } from "react";
-import { create } from "~/server/actions/proposta"
+import { useFormState } from "react-dom";
+import { useFormReset } from "~/hooks/use-form-reset";
+import { useToastMessage } from "~/hooks/use-toast-message";
+import { create } from "~/server/actions/proposta";
+import { EMPTY_FORM_STATE } from "~/utils/to-form-state";
+import { FieldError } from "../shared/forms/field-error";
+import { SubmitButton } from "../shared/forms/submit-button";
 
 export default function PropostaForm() {
-  const [error, setError] = useState<string | null>(null);
+  const [formState, action] = useFormState(create, EMPTY_FORM_STATE);
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const form = event.currentTarget;
-    const data = new FormData(form);
-    const res = await create(data);
-    if (res?.error) {
-      setError(res?.error);
-    }
-  }
+  const noScriptFallback = useToastMessage(formState);
+  const formRef = useFormReset(formState);
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form action={action} ref={formRef}>
       <div className="flex gap-2">
-      <input
-        type="text"
-        id="id"
-        name="id"
-        placeholder="PXXXX.XXXX"
-        className="border border-gray-300 rounded-md text-black h-12"
-      />
-      <button
-        type="submit"
-        className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-      >
-        Nova proposta
-      </button>
+        <input
+          type="text"
+          id="id"
+          name="id"
+          placeholder="PXXXX.XXXX"
+          className="h-12 rounded-md border border-gray-300 text-black"
+        />
+        <FieldError formState={formState} name="id" />
+        <SubmitButton label="Submeter" loading="Criando..." />
+        {noScriptFallback}
       </div>
-      {error && <p className="text-red-500">{error}</p>}
     </form>
-  )
+  );
 }

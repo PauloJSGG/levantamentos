@@ -10,11 +10,12 @@ services:
   #     - .env.production
 
   db:
-    image: postgres
-    container_name: postgres
+    # image working with m1 chips mysql
+    image: mysql/mysql-server:8.0
     ports:
-      - 5432:5432
+      - "3306:3306"
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: Qys2JEdRs-99gVtJ
-      POSTGRES_DB: levantamentos
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: levantamentos
+      MYSQL_USER: user1
+

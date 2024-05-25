@@ -9,7 +9,7 @@ datasource db {
 }
 
 model account {
-  id            Int
+  id            Int     @unique(map: "id_UNIQUE") @default(autoincrement())
   user_id       Int
   type          String? @db.VarChar(255)
   refresh_token String? @db.VarChar(255)
@@ -26,27 +26,27 @@ model account {
 }
 
 model edificio {
-  id            Int
+  id            Int        @unique(map: "id_UNIQUE") @default(autoincrement())
   designacao    String?    @db.VarChar(255)
   descricao     String?    @db.VarChar(255)
-  proposta_id   Int
   foto_edificio String?    @db.Text
   iluminacao_id Int
   foto_id       Int
+  proposta_id   String     @db.VarChar(10)
   foto          foto       @relation(fields: [foto_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_edificio_foto1")
   iluminacao    iluminacao @relation(fields: [iluminacao_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_edificio_iluminacao1")
-  proposta      proposta   @relation(fields: [proposta_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_edificios_propostas1")
+  proposta      proposta   @relation(fields: [proposta_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_edificio_proposta1")
   espaco        espaco[]
   piso          piso[]
 
-  @@id([id, proposta_id, iluminacao_id, foto_id])
+  @@id([id, iluminacao_id, foto_id, proposta_id])
   @@index([foto_id], map: "fk_edificio_foto1_idx")
   @@index([iluminacao_id], map: "fk_edificio_iluminacao1_idx")
-  @@index([proposta_id], map: "fk_edificios_propostas1_idx")
+  @@index([proposta_id], map: "fk_edificio_proposta1_idx")
 }
 
 model elevadores {
-  id               Int
+  id               Int       @unique(map: "id_UNIQUE") @default(autoincrement())
   ref_elevador     String    @unique(map: "ref_elevador_UNIQUE") @db.VarChar(45)
   carga            Int
   piso_id          Int
@@ -62,7 +62,7 @@ model elevadores {
 }
 
 model envidracados {
-  id                   Int
+  id                   Int               @unique(map: "id_UNIQUE") @default(autoincrement())
   quant_vao            Int
   dataCriacao          DateTime?         @db.Timestamp(0)
   tipo_envidracados_id Int
@@ -74,10 +74,10 @@ model envidracados {
 }
 
 model espaco {
-  id               Int
+  id               Int          @unique(map: "id_UNIQUE") @default(autoincrement())
   edificio_id      Int
   piso_id          Int
-  numero           Int          @unique(map: "numero_UNIQUE") @default(autoincrement())
+  numero           Int          @unique(map: "numero_UNIQUE")
   designacao       String?      @db.VarChar(255)
   peDireito        Float        @db.Float
   climatizado      Int          @db.TinyInt
@@ -107,7 +107,7 @@ model espaco {
 }
 
 model foto {
-  id                Int                 @id
+  id                Int                 @id @unique(map: "id_UNIQUE") @default(autoincrement())
   caminhoRelativo   String?             @db.Text
   dataCriacao       DateTime?           @db.Timestamp(0)
   tipo              String?             @db.VarChar(255)
@@ -120,7 +120,7 @@ model foto {
 }
 
 model iluminacao {
-  id           Int
+  id           Int        @unique(map: "id_UNIQUE") @default(autoincrement())
   quantidade   Float      @db.Float
   dataCriacao  DateTime?  @db.Timestamp(0)
   luminaria_id Int
@@ -136,7 +136,7 @@ model iluminacao {
 }
 
 model luminaria {
-  id                 Int
+  id                 Int             @unique(map: "id_UNIQUE") @default(autoincrement())
   ref_luminaria      String          @unique(map: "ref_luminaria_UNIQUE") @db.VarChar(45)
   tipo_iluminacao_id Int
   potencia_lampada   Float?          @db.Float
@@ -152,14 +152,14 @@ model luminaria {
 }
 
 model ocupacao {
-  id          Int      @id
+  id          Int      @id @unique(map: "id_UNIQUE") @default(autoincrement())
   atividade   String?  @db.VarChar(255)
   perfil_ocup String?  @db.VarChar(255)
   espaco      espaco[]
 }
 
 model piso {
-  id          Int
+  id          Int          @unique(map: "id_UNIQUE") @default(autoincrement())
   nome        String?      @db.VarChar(45)
   edificio_id Int
   elevadores  elevadores[]
@@ -171,7 +171,7 @@ model piso {
 }
 
 model proposta {
-  id          Int
+  id          String     @unique(map: "id_UNIQUE") @db.VarChar(10)
   user_id     Int
   dataCriacao DateTime?  @db.Timestamp(0)
   edificio    edificio[]
@@ -182,7 +182,7 @@ model proposta {
 }
 
 model session {
-  id           Int
+  id           Int       @unique(map: "id_UNIQUE") @default(autoincrement())
   sessionToken String?   @db.VarChar(45)
   user_id      Int
   expires      DateTime? @db.Timestamp(0)
@@ -193,7 +193,7 @@ model session {
 }
 
 model sistemas {
-  id               Int
+  id               Int           @unique(map: "id_UNIQUE") @default(autoincrement())
   quant_sistemas   Int
   tipo_sistemas_id Int
   dataCriacao      DateTime?     @db.Timestamp(0)
@@ -205,7 +205,7 @@ model sistemas {
 }
 
 model tipo_envidracados {
-  id                   Int
+  id                   Int            @unique(map: "id_UNIQUE") @default(autoincrement())
   ref_vao              String         @unique(map: "ref_vao_UNIQUE") @db.VarChar(45)
   tipo_vao             String         @db.VarChar(255)
   tipo_caixilharia     String         @db.VarChar(255)
@@ -225,13 +225,13 @@ model tipo_envidracados {
 }
 
 model tipo_iluminacao {
-  id        Int         @id
+  id        Int         @id @unique(map: "id_UNIQUE") @default(autoincrement())
   tipo      String?     @db.VarChar(255)
   luminaria luminaria[]
 }
 
 model tipo_protecoes {
-  id                  Int                 @id
+  id                  Int                 @id @unique(map: "id_UNIQUE") @default(autoincrement())
   protecao_interior   String?             @db.VarChar(255)
   protecao_exterior   String?             @db.VarChar(255)
   protecao_intermedia String?             @db.VarChar(255)
@@ -239,11 +239,11 @@ model tipo_protecoes {
 }
 
 model tipo_sistemas {
-  id            Int        @id
+  id            Int        @id @unique(map: "id_UNIQUE") @default(autoincrement())
   ref_sistema   String     @unique(map: "ref_sistema_UNIQUE") @db.VarChar(45)
   nome          String?    @db.VarChar(255)
   tipo          String?    @db.VarChar(255)
-  fonte_energia String?    @db.VarChar(255)
+  fonte_energia String     @db.VarChar(255)
   marca         String?    @db.VarChar(255)
   modelo        String?    @db.VarChar(255)
   funcao        String     @db.VarChar(45)
@@ -251,7 +251,7 @@ model tipo_sistemas {
 }
 
 model user {
-  id            Int        @id
+  id            Int        @id @unique(map: "id_UNIQUE") @default(autoincrement())
   name          String?    @db.VarChar(255)
   email         String?    @db.VarChar(255)
   emailVerified DateTime?  @db.Timestamp(0)

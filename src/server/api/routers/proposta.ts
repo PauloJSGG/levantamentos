@@ -8,19 +8,28 @@ import {
 import { getServerAuthSession } from "~/server/auth";
 
 export const propostaRouter = createTRPCRouter({
-    create: protectedProcedure
-    .input(z.object({ id: z.string().regex(/^P[0-9]{4}\.[0-9]{4}$/, 'Text deve respeitar o formato PXXXX.XXXX') }))
+  create: protectedProcedure
+    .input(
+      z.object({
+        id: z
+          .string()
+          .regex(
+            /^P[0-9]{4}\.[0-9]{4}$/,
+            "Text deve respeitar o formato PXXXX.XXXX",
+          ),
+      }),
+    )
     .mutation(async ({ ctx, input }) => {
-      const session = await getServerAuthSession()
+      const session = await getServerAuthSession();
       return ctx.db.proposta.create({
         data: {
           id: input.id,
-          criadoPor: { connect: { id: session?.user.id } },
+          user: { connect: { id: Number(session?.user.id) } },
         },
       });
     }),
 
-    get: protectedProcedure
+  get: protectedProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ input, ctx }) => {
       return ctx.db.proposta.findUnique({
@@ -28,35 +37,33 @@ export const propostaRouter = createTRPCRouter({
       });
     }),
 
-    // getAllWithPaginate
-    // getAllWithPaginate: protectedProcedure
-    // .input(z.object({ skip: z.number() }))
-    // .input(z.object({ take: z.number() }))
-    // .query(async ({ input, ctx }) => {
-    //   return ctx.db.proposta.findMany({
-    //     skip: input.skip,
-    //     take: input.take,
-    //   });
-    // }),
+  // getAllWithPaginate
+  // getAllWithPaginate: protectedProcedure
+  // .input(z.object({ skip: z.number() }))
+  // .input(z.object({ take: z.number() }))
+  // .query(async ({ input, ctx }) => {
+  //   return ctx.db.proposta.findMany({
+  //     skip: input.skip,
+  //     take: input.take,
+  //   });
+  // }),
 
-    getAll: protectedProcedure
-    .query(async ({ ctx }) => {
-      return ctx.db.proposta.findMany({
-        include: { criadoPor: true },
-      });
-    }),
+  getAll: protectedProcedure.query(async ({ ctx }) => {
+    return ctx.db.proposta.findMany({
+      include: { user: true },
+    });
+  }),
 
-    getAllWithEdificiosAndEspacos: protectedProcedure
+  getAllWithEdificiosAndEspacos: protectedProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ input, ctx }) => {
       return ctx.db.proposta.findFirst({
         where: { id: input.id },
-        include: { edificios: { include: { espacos: true } }, criadoPor: true},
+        include: { edificios: { include: { espacos: true } }, criadoPor: true },
       });
     }),
 
-
-    getWithEdificios: protectedProcedure
+  getWithEdificios: protectedProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ input, ctx }) => {
       return ctx.db.proposta.findFirst({
@@ -64,5 +71,4 @@ export const propostaRouter = createTRPCRouter({
         include: { edificios: true },
       });
     }),
-
-})
+});

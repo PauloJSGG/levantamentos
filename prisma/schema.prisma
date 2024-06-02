@@ -51,7 +51,7 @@ model elevadores {
   carga            Int
   piso_id          Int
   piso_edificio_id Int
-  dataCriacao      DateTime? @db.Timestamp(0)
+  data_criacao     DateTime? @db.Timestamp(0)
   foto_id          Int
   foto             foto      @relation(fields: [foto_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_elevadores_foto1")
   piso             piso      @relation(fields: [piso_id, piso_edificio_id], references: [id, edificio_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_elevadores_piso1")
@@ -64,7 +64,7 @@ model elevadores {
 model envidracados {
   id                   Int               @unique(map: "id_UNIQUE") @default(autoincrement())
   quant_vao            Int
-  dataCriacao          DateTime?         @db.Timestamp(0)
+  data_criacao         DateTime?         @db.Timestamp(0)
   tipo_envidracados_id Int
   tipo_envidracados    tipo_envidracados @relation(fields: [tipo_envidracados_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_envidracados_tipo_envidracados1")
   espaco               espaco[]
@@ -109,7 +109,7 @@ model espaco {
 model foto {
   id                Int                 @id @unique(map: "id_UNIQUE") @default(autoincrement())
   caminhoRelativo   String?             @db.Text
-  dataCriacao       DateTime?           @db.Timestamp(0)
+  data_criacao      DateTime?           @db.Timestamp(0)
   tipo              String?             @db.VarChar(255)
   edificio          edificio[]
   elevadores        elevadores[]
@@ -122,7 +122,7 @@ model foto {
 model iluminacao {
   id           Int        @unique(map: "id_UNIQUE") @default(autoincrement())
   quantidade   Float      @db.Float
-  dataCriacao  DateTime?  @db.Timestamp(0)
+  data_criacao DateTime?  @db.Timestamp(0)
   luminaria_id Int
   foto_id      Int
   edificio     edificio[]
@@ -171,11 +171,11 @@ model piso {
 }
 
 model proposta {
-  id          String     @unique(map: "id_UNIQUE") @db.VarChar(10)
-  user_id     Int
-  dataCriacao DateTime?  @db.Timestamp(0)
-  edificio    edificio[]
-  user        user       @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_proposta_user1")
+  id           String     @unique(map: "id_UNIQUE") @db.VarChar(10)
+  user_id      Int
+  data_criacao DateTime?  @db.Timestamp(0)
+  edificio     edificio[]
+  user         user       @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_proposta_user1")
 
   @@id([id, user_id])
   @@index([user_id], map: "fk_proposta_user1_idx")
@@ -196,7 +196,7 @@ model sistemas {
   id               Int           @unique(map: "id_UNIQUE") @default(autoincrement())
   quant_sistemas   Int
   tipo_sistemas_id Int
-  dataCriacao      DateTime?     @db.Timestamp(0)
+  data_criacao     DateTime?     @db.Timestamp(0)
   espaco           espaco[]
   tipo_sistemas    tipo_sistemas @relation(fields: [tipo_sistemas_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_sistemas_tipo_sistemas1")
 
@@ -253,7 +253,7 @@ model tipo_sistemas {
 model user {
   id            Int        @id @unique(map: "id_UNIQUE") @default(autoincrement())
   name          String?    @db.VarChar(255)
-  email         String?    @db.VarChar(255)
+  email         String?    @unique(map: "email_UNIQUE") @db.VarChar(255)
   emailVerified DateTime?  @db.Timestamp(0)
   image         String?    @db.Text
   password      String?    @db.VarChar(200)

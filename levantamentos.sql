@@ -28,7 +28,8 @@ CREATE TABLE IF NOT EXISTS `levantamentos`.`user` (
   `image` TEXT NULL,
   `password` VARCHAR(200) NULL,
   PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE)
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
+  UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE)
 ENGINE = InnoDB;
 
 
@@ -82,7 +83,7 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `levantamentos`.`proposta` (
   `id` VARCHAR(10) NOT NULL,
   `user_id` INT NOT NULL,
-  `dataCriacao` TIMESTAMP NULL,
+  `data_criacao` TIMESTAMP NULL,
   PRIMARY KEY (`id`, `user_id`),
   INDEX `fk_proposta_user1_idx` (`user_id` ASC) VISIBLE,
   UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
@@ -100,7 +101,7 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `levantamentos`.`foto` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `caminhoRelativo` TEXT NULL,
-  `dataCriacao` TIMESTAMP NULL,
+  `data_criacao` TIMESTAMP NULL,
   `tipo` VARCHAR(255) NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE)
@@ -152,7 +153,7 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `levantamentos`.`iluminacao` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `quantidade` FLOAT NOT NULL,
-  `dataCriacao` TIMESTAMP NULL,
+  `data_criacao` TIMESTAMP NULL,
   `luminaria_id` INT NOT NULL,
   `foto_id` INT NOT NULL,
   PRIMARY KEY (`id`, `luminaria_id`, `foto_id`),
@@ -287,7 +288,7 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `levantamentos`.`envidracados` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `quant_vao` INT NOT NULL,
-  `dataCriacao` TIMESTAMP NULL,
+  `data_criacao` TIMESTAMP NULL,
   `tipo_envidracados_id` INT NOT NULL,
   PRIMARY KEY (`id`, `tipo_envidracados_id`),
   INDEX `fk_envidracados_tipo_envidracados1_idx` (`tipo_envidracados_id` ASC) VISIBLE,
@@ -325,7 +326,7 @@ CREATE TABLE IF NOT EXISTS `levantamentos`.`sistemas` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `quant_sistemas` INT NOT NULL,
   `tipo_sistemas_id` INT NOT NULL,
-  `dataCriacao` TIMESTAMP NULL,
+  `data_criacao` TIMESTAMP NULL,
   PRIMARY KEY (`id`, `tipo_sistemas_id`),
   INDEX `fk_sistemas_tipo_sistemas1_idx` (`tipo_sistemas_id` ASC) VISIBLE,
   UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
@@ -412,7 +413,7 @@ CREATE TABLE IF NOT EXISTS `levantamentos`.`elevadores` (
   `carga` INT NOT NULL,
   `piso_id` INT NOT NULL,
   `piso_edificio_id` INT NOT NULL,
-  `dataCriacao` TIMESTAMP NULL,
+  `data_criacao` TIMESTAMP NULL,
   `foto_id` INT NOT NULL,
   PRIMARY KEY (`id`, `piso_id`, `piso_edificio_id`, `foto_id`),
   UNIQUE INDEX `ref_elevador_UNIQUE` (`ref_elevador` ASC) VISIBLE,

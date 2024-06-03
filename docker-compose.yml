@@ -18,4 +18,3 @@ services:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: levantamentos
       MYSQL_USER: user1
-

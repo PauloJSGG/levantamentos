@@ -15,7 +15,7 @@ export const edificioRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       return ctx.db.edificio.create({
         data: {
-          propostaId: input.propostaId,
+          proposta_id: input.propostaId,
           designacao: input.designacao,
           descricao: input.descricao,
         },
@@ -27,7 +27,7 @@ export const edificioRouter = createTRPCRouter({
     .query(async ({ input, ctx }) => {
       return ctx.db.edificio.findUnique({
         where: { id: input.id },
-        include: { espacos: true },
+        include: { espaco: true },
       });
     }),
 
@@ -35,8 +35,8 @@ export const edificioRouter = createTRPCRouter({
     .input(z.object({ propostaId: z.string() }))
     .query(async ({ input, ctx }) => {
       return ctx.db.edificio.findMany({
-        where: { propostaId: input.propostaId },
-        include: { espacos: true },
+        where: { proposta_id: input.propostaId },
+        include: { espaco: true },
       });
     }),
 

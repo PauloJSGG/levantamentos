@@ -1,5 +1,5 @@
-import { useRef, useEffect } from 'react';
-import { FormState } from '~/utils/to-form-state';
+import { useRef, useEffect } from "react";
+import { FormState } from "~/utils/to-form-state";
 
 const useFormReset = (formState: FormState) => {
   const formRef = useRef<HTMLFormElement>(null);
@@ -8,7 +8,7 @@ const useFormReset = (formState: FormState) => {
   useEffect(() => {
     if (!formRef.current) return;
     if (
-      formState.status === 'SUCCESS' &&
+      formState.status === "SUCCESS" &&
       formState.timestamp !== prevTimestamp.current
     ) {
       formRef.current.reset();

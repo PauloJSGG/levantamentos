@@ -7,7 +7,7 @@ export default async function Propostas() {
   const propostas = await api.proposta.getAll();
 
   return (
-    <div className="container mx-auto gap-2 flex flex-col">
+    <div className="container mx-auto flex flex-col gap-2">
       <h1 className="mb-4 text-2xl font-bold">Propostas:</h1>
       <table className="min-w-full table-auto border border-gray-300 bg-white">
         <thead>
@@ -28,18 +28,16 @@ export default async function Propostas() {
                     {proposta.id}
                   </Link>
                 </td>
-                <td className="border-b px-4 py-2">
-                  {proposta.criadoPor.name}
-                </td>
+                <td className="border-b px-4 py-2">{proposta.user.name}</td>
               </tr>
             </>
           ))}
         </tbody>
       </table>
       <Link
-        href="/propostas/novo" 
-        className="rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 text-center"
-        >
+        href="/propostas/novo"
+        className="rounded-md bg-blue-500 px-4 py-2 text-center text-white hover:bg-blue-600"
+      >
         Criar nova proposta
       </Link>
     </div>

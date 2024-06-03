@@ -38,7 +38,7 @@
 //   return (
 //     <div
 //     className='flex flex-col justify-between p-4 border border-gray-300 h-96 w-96
-//     fixed bottom-4 right-4 bg-white rounded-xl shadow-md' 
+//     fixed bottom-4 right-4 bg-white rounded-xl shadow-md'
 //     >
 //       <div
 //         // side chat

@@ -59,7 +59,7 @@ export const propostaRouter = createTRPCRouter({
     .query(async ({ input, ctx }) => {
       return ctx.db.proposta.findFirst({
         where: { id: input.id },
-        include: { edificios: { include: { espacos: true } }, criadoPor: true },
+        include: { edificio: { include: { espaco: true } }, user: true },
       });
     }),
 
@@ -68,7 +68,7 @@ export const propostaRouter = createTRPCRouter({
     .query(async ({ input, ctx }) => {
       return ctx.db.proposta.findFirst({
         where: { id: input.id },
-        include: { edificios: true },
+        include: { edificio: true },
       });
     }),
 });

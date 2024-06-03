@@ -55,9 +55,7 @@ export const create = async (formState: FormState, formData: FormData) => {
   const espacoId = Number(formData.get("espacoId"));
 
   try {
-    const filePaths = await Promise.all(
-      fotosEspaco.map(saveImage),
-    );
+    const filePaths = await Promise.all(fotosEspaco.map(saveImage));
 
     await api.espaco.create({
       espacoId: Number(formData.get("espacoId")) as number,

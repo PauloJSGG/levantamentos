@@ -8,7 +8,7 @@ export default async function Home() {
   const session = await getServerAuthSession();
 
   return (
-    <div className="flex h-dvh justify-center items-center dark:bg-slate-600">
+    <div className="flex h-dvh items-center justify-center dark:bg-slate-600">
       <div>
         {!session ? (
           <>
@@ -19,18 +19,24 @@ export default async function Home() {
         >
           Iiniciar sessão
         </Link> */}
-            <Link href="/registar" className="ml-3 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+            <Link
+              href="/registar"
+              className="ml-3 rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+            >
               Registar
             </Link>
           </>
         ) : (
           <>
-            <Link href="/propostas" className="ml-3 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+            <Link
+              href="/propostas"
+              className="ml-3 rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+            >
               Propostas
             </Link>
             <Link
               href="/api/auth/signout"
-              className="ml-3 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+              className="ml-3 rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
             >
               Terminar sessão
             </Link>

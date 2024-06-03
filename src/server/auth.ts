@@ -7,7 +7,7 @@ import {
   Awaitable,
 } from "next-auth";
 import { type Adapter } from "next-auth/adapters";
-import CredentialsProvider from 'next-auth/providers/credentials'
+import CredentialsProvider from "next-auth/providers/credentials";
 import DiscordProvider from "next-auth/providers/discord";
 import Google from "next-auth/providers/google";
 import { redirect } from "next/dist/server/api-utils";
@@ -38,7 +38,7 @@ declare module "next-auth" {
 export const authOptions: NextAuthOptions = {
   callbacks: {
     async redirect(params) {
-      return '/propostas';
+      return "/propostas";
     },
     async session(params) {
       const { session, token } = params;
@@ -67,8 +67,8 @@ export const authOptions: NextAuthOptions = {
 
   providers: [
     CredentialsProvider({
-      id: 'credentials',
-      name: 'Credentials',
+      id: "credentials",
+      name: "Credentials",
       credentials: {
         email: { label: "Email", type: "text" },
         password: { label: "Password", type: "password" },
@@ -88,22 +88,24 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
-        const isPasswordValid = await compare(credentials.password, user.password);
+        const isPasswordValid = await compare(
+          credentials.password,
+          user.password,
+        );
 
         if (!isPasswordValid) {
-          return null
+          return null;
         }
 
         return {
           id: user.id,
-          email: user.email ?? '',
-          name: user.name ?? '',
+          email: user.email ?? "",
+          name: user.name ?? "",
           // randomKey: 'Hey cool'
-        }
+        };
       },
     }),
   ],
-
 };
 
 export const getServerAuthSession = () => getServerSession(authOptions);

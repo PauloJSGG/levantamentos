@@ -26,21 +26,18 @@ model account {
 }
 
 model edificio {
-  id            Int        @unique(map: "id_UNIQUE") @default(autoincrement())
-  designacao    String?    @db.VarChar(255)
-  descricao     String?    @db.VarChar(255)
-  foto_edificio String?    @db.Text
-  iluminacao_id Int
-  foto_id       Int
-  proposta_id   String     @db.VarChar(10)
-  foto          foto       @relation(fields: [foto_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_edificio_foto1")
-  iluminacao    iluminacao @relation(fields: [iluminacao_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_edificio_iluminacao1")
-  proposta      proposta   @relation(fields: [proposta_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_edificio_proposta1")
+  id            Int         @unique(map: "id_UNIQUE") @default(autoincrement())
+  designacao    String?     @db.VarChar(255)
+  descricao     String?     @db.VarChar(255)
+  iluminacao_id Int?
+  proposta_id   String      @db.VarChar(10)
+  iluminacao    iluminacao? @relation(fields: [iluminacao_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_edificio_iluminacao1")
+  proposta      proposta    @relation(fields: [proposta_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_edificio_proposta1")
   espaco        espaco[]
+  foto          foto[]
   piso          piso[]
 
-  @@id([id, iluminacao_id, foto_id, proposta_id])
-  @@index([foto_id], map: "fk_edificio_foto1_idx")
+  @@id([id, proposta_id])
   @@index([iluminacao_id], map: "fk_edificio_iluminacao1_idx")
   @@index([proposta_id], map: "fk_edificio_proposta1_idx")
 }
@@ -52,12 +49,10 @@ model elevadores {
   piso_id          Int
   piso_edificio_id Int
   data_criacao     DateTime? @db.Timestamp(0)
-  foto_id          Int
-  foto             foto      @relation(fields: [foto_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_elevadores_foto1")
   piso             piso      @relation(fields: [piso_id, piso_edificio_id], references: [id, edificio_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_elevadores_piso1")
+  foto             foto[]
 
-  @@id([id, piso_id, piso_edificio_id, foto_id])
-  @@index([foto_id], map: "fk_elevadores_foto1_idx")
+  @@id([id, piso_id, piso_edificio_id])
   @@index([piso_id, piso_edificio_id], map: "fk_elevadores_piso1_idx")
 }
 
@@ -79,7 +74,7 @@ model espaco {
   piso_id          Int
   numero           Int          @unique(map: "numero_UNIQUE")
   designacao       String?      @db.VarChar(255)
-  peDireito        Float        @db.Float
+  pe_direito       Float        @db.Float
   climatizado      Int          @db.TinyInt
   util             Int          @db.TinyInt
   numero_ocupantes Int?
@@ -87,18 +82,16 @@ model espaco {
   iluminacao_id    Int
   envidracados_id  Int
   sistemas_id      Int
-  foto_id          Int
   envidracados     envidracados @relation(fields: [envidracados_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_espaco_envidracados1")
-  foto             foto         @relation(fields: [foto_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_espaco_foto1")
   iluminacao       iluminacao   @relation(fields: [iluminacao_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_espaco_iluminacao1")
   sistemas         sistemas     @relation(fields: [sistemas_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_espaco_sistemas1")
   edificio         edificio     @relation(fields: [edificio_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_espacos_edificios1")
   ocupacao         ocupacao     @relation(fields: [ocupacao_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_espacos_ocupacao1")
   piso             piso         @relation(fields: [piso_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_espacos_pisos1")
+  foto             foto[]
 
-  @@id([id, edificio_id, piso_id, ocupacao_id, iluminacao_id, envidracados_id, sistemas_id, foto_id])
+  @@id([id, edificio_id, piso_id, ocupacao_id, iluminacao_id, envidracados_id, sistemas_id])
   @@index([envidracados_id], map: "fk_espaco_envidracados1_idx")
-  @@index([foto_id], map: "fk_espaco_foto1_idx")
   @@index([iluminacao_id], map: "fk_espaco_iluminacao1_idx")
   @@index([sistemas_id], map: "fk_espaco_sistemas1_idx")
   @@index([edificio_id], map: "fk_espacos_edificios1_idx")
@@ -111,12 +104,21 @@ model foto {
   caminhoRelativo   String?             @db.Text
   data_criacao      DateTime?           @db.Timestamp(0)
   tipo              String?             @db.VarChar(255)
-  edificio          edificio[]
-  elevadores        elevadores[]
-  espaco            espaco[]
-  iluminacao        iluminacao[]
+  edificio_id       Int?
+  elevadores_id     Int?
+  espaco_id         Int?
+  tipo_sistemas_id  Int?
+  edificio          edificio?           @relation(fields: [edificio_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_foto_edificio1")
+  elevadores        elevadores?         @relation(fields: [elevadores_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_foto_elevadores1")
+  espaco            espaco?             @relation(fields: [espaco_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_foto_espaco1")
+  tipo_sistemas     tipo_sistemas?      @relation(fields: [tipo_sistemas_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_foto_tipo_sistemas1")
   luminaria         luminaria[]
   tipo_envidracados tipo_envidracados[]
+
+  @@index([edificio_id], map: "fk_foto_edificio1_idx")
+  @@index([elevadores_id], map: "fk_foto_elevadores1_idx")
+  @@index([espaco_id], map: "fk_foto_espaco1_idx")
+  @@index([tipo_sistemas_id], map: "fk_foto_tipo_sistemas1_idx")
 }
 
 model iluminacao {
@@ -124,14 +126,11 @@ model iluminacao {
   quantidade   Float      @db.Float
   data_criacao DateTime?  @db.Timestamp(0)
   luminaria_id Int
-  foto_id      Int
   edificio     edificio[]
   espaco       espaco[]
-  foto         foto       @relation(fields: [foto_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_iluminacao_foto1")
   luminaria    luminaria  @relation(fields: [luminaria_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_iluminacao_luminaria1")
 
-  @@id([id, luminaria_id, foto_id])
-  @@index([foto_id], map: "fk_iluminacao_foto1_idx")
+  @@id([id, luminaria_id])
   @@index([luminaria_id], map: "fk_iluminacao_luminaria1_idx")
 }
 
@@ -182,11 +181,11 @@ model proposta {
 }
 
 model session {
-  id           Int       @unique(map: "id_UNIQUE") @default(autoincrement())
-  sessionToken String?   @db.VarChar(45)
-  user_id      Int
-  expires      DateTime? @db.Timestamp(0)
-  user         user      @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_Session_user")
+  id            Int       @unique(map: "id_UNIQUE") @default(autoincrement())
+  session_token String?   @db.VarChar(45)
+  user_id       Int
+  expires       DateTime? @db.Timestamp(0)
+  user          user      @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_Session_user")
 
   @@id([id, user_id])
   @@index([user_id], map: "fk_Session_user_idx")
@@ -247,17 +246,18 @@ model tipo_sistemas {
   marca         String?    @db.VarChar(255)
   modelo        String?    @db.VarChar(255)
   funcao        String     @db.VarChar(45)
+  foto          foto[]
   sistemas      sistemas[]
 }
 
 model user {
-  id            Int        @id @unique(map: "id_UNIQUE") @default(autoincrement())
-  name          String?    @db.VarChar(255)
-  email         String?    @unique(map: "email_UNIQUE") @db.VarChar(255)
-  emailVerified DateTime?  @db.Timestamp(0)
-  image         String?    @db.Text
-  password      String?    @db.VarChar(200)
-  account       account[]
-  proposta      proposta[]
-  session       session[]
+  id             Int        @id @unique(map: "id_UNIQUE") @default(autoincrement())
+  name           String?    @db.VarChar(255)
+  email          String?    @unique(map: "email_UNIQUE") @db.VarChar(255)
+  email_verified DateTime?  @db.Timestamp(0)
+  image          String?    @db.Text
+  password       String?    @db.VarChar(200)
+  account        account[]
+  proposta       proposta[]
+  session        session[]
 }

@@ -21,7 +21,7 @@
 
 // io.on('connection', (socket) => {
 //   console.log('A user connected');
-  
+
 //   // Handle chat messages
 //   socket.on('new message', (message) => {
 //     messages.push(message);

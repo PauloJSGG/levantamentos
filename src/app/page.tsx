@@ -29,7 +29,7 @@ export default async function Home() {
         ) : (
           <>
             <Link
-              href="/propostas"
+              href="/propostas?page=1"
               className="ml-3 rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
             >
               Propostas

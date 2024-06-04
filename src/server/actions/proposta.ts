@@ -12,6 +12,5 @@ export const create = async (formState: FormState, formData: FormData) => {
     return toFormState("ERROR", "Ocorreu um erro ao criar a proposta.");
   }
 
-  revalidatePath("/propostas/novo");
   return toFormState("SUCCESS", "Proposta criada com sucesso.");
 };

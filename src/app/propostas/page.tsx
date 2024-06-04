@@ -3,8 +3,10 @@ import PropostaForm from "~/components/forms/proposta";
 import { create } from "~/server/actions/proposta";
 import { api } from "~/trpc/server";
 
-export default async function Propostas() {
-  const propostas = await api.proposta.getAll();
+export default async function Propostas({searchParams}: {searchParams: {page: string}}) {
+  const propostas = await api.proposta.getAll({
+    page: Number(searchParams.page),
+  });
 
   return (
     <div className="container mx-auto flex flex-col gap-2">
@@ -34,6 +36,21 @@ export default async function Propostas() {
           ))}
         </tbody>
       </table>
+      {/* pagination */}
+      <div className="flex gap-2">
+        <Link
+          href={`/propostas?page=${Number(searchParams.page) - 1}`}
+          className="rounded-md bg-blue-500 px-4 py-2 text-center text-white hover:bg-blue-600"
+        >
+          Anterior
+        </Link>
+        <Link
+          href={`/propostas?page=${Number(searchParams.page) + 1}`}
+          className="rounded-md bg-blue-500 px-4 py-2 text-center text-white hover:bg-blue-600"
+        >
+          Seguinte
+        </Link>
+      </div>
       <Link
         href="/propostas/novo"
         className="rounded-md bg-blue-500 px-4 py-2 text-center text-white hover:bg-blue-600"

@@ -24,6 +24,7 @@ export const propostaRouter = createTRPCRouter({
       return ctx.db.proposta.create({
         data: {
           id: input.id,
+          data_criacao: new Date(),
           user: { connect: { id: Number(session?.user.id) } },
         },
       });
@@ -48,11 +49,16 @@ export const propostaRouter = createTRPCRouter({
   //   });
   // }),
 
-  getAll: protectedProcedure.query(async ({ ctx }) => {
-    return ctx.db.proposta.findMany({
-      include: { user: true },
-    });
-  }),
+  getAll: protectedProcedure
+    .input(z.object({ page: z.number() }))
+    .query(async ({input,  ctx }) => {
+      // findmany with pagination
+      return ctx.db.proposta.findMany({
+        skip: 5 * (input.page - 1),
+        take: 5,
+        include: { user: true },
+      });
+    }),
 
   getAllWithEdificiosAndEspacos: protectedProcedure
     .input(z.object({ id: z.string() }))

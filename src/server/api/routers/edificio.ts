@@ -10,14 +10,14 @@ import { getServerAuthSession } from "~/server/auth";
 export const edificioRouter = createTRPCRouter({
   create: protectedProcedure
     .input(z.object({ propostaId: z.string().min(1) }))
-    .input(z.object({ descricao: z.string().min(1) }))
-    .input(z.object({ designacao: z.string().min(1) }))
+    .input(z.object({ descricao: z.string().optional() }))
+    .input(z.object({ designacao: z.string().optional() }))
     .mutation(async ({ ctx, input }) => {
       return ctx.db.edificio.create({
         data: {
           proposta_id: input.propostaId,
-          designacao: input.designacao,
-          descricao: input.descricao,
+          designacao: input.designacao === "" ? null : input.designacao,
+          descricao: input.descricao === "" ? null : input.descricao,
         },
       });
     }),

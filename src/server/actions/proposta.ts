@@ -9,9 +9,9 @@ export const create = async (formState: FormState, formData: FormData) => {
       id: formData.get("id") as string,
     });
   } catch (error) {
-    return toFormState("ERROR", "Error creating message");
+    return toFormState("ERROR", "Ocorreu um erro ao criar a proposta.");
   }
 
   revalidatePath("/propostas/novo");
-  return toFormState("SUCCESS", "Message created");
+  return toFormState("SUCCESS", "Proposta criada com sucesso.");
 };

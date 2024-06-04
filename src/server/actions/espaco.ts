@@ -63,6 +63,8 @@ export const create = async (formState: FormState, formData: FormData) => {
       descricao: formData.get("descricao") as string,
       fotosEspaco: filePaths,
     });
-  } catch (err) {}
-  return toFormState("SUCCESS", "Message created");
+  } catch (err) {
+    return toFormState("ERROR", "Ocorreu um erro");
+  }
+  return toFormState("SUCCESS", "Espaço criado");
 };

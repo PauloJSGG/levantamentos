@@ -33,7 +33,8 @@ export default function EspacoForm({ edificioId }: { edificioId: string }) {
           defaultValue={edificioId}
           className="w-full rounded-md border border-gray-300 px-3 py-2 text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
-
+      </div>
+      <div className="mb-4">
         <label
           htmlFor="designacao"
           className="mb-2 block font-bold text-gray-400"

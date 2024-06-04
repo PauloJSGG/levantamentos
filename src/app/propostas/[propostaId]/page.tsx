@@ -39,7 +39,7 @@ export default async function Proposta({
                   </li>
                 ))}
                 <Link
-                  href={`/propostas/${proposta?.id}/edificios`}
+                  href={`/propostas/${proposta?.id}/edificios/novo`}
                   className="text-blue-500 hover:underline"
                 >
                   Novo edificio

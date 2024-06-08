@@ -7,7 +7,7 @@ services:
     depends_on:
       - db
     env_file:
-      - .env.production
+      - .env
 
   db:
     # image working with m1 chips mysql
@@ -15,6 +15,6 @@ services:
     ports:
       - "3306:3306"
     environment:
+      MYSQL_USER: root
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: levantamentos
-      MYSQL_USER: user1

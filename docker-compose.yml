@@ -12,6 +12,10 @@ services:
   db:
     # image working with m1 chips mysql
     image: mariadb:10.5
+    ports:
+      - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: levantamentos
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root

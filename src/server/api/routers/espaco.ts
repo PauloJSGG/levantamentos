@@ -29,11 +29,21 @@ export const espacoRouter = createTRPCRouter({
       return ctx.db.espaco.create({
         data: {
           designacao: input.designacao,
-          fotosEspaco: {
+          numero: 1,
+          pe_direito: 1,
+          climatizado: 3,
+          util: 1,
+          foto: {
             createMany: {
               data: input.fotosEspaco,
             },
           },
+          edificio_id: 1,
+          piso_id: 1,
+          ocupacao_id: 1,
+          iluminacao_id: 1,
+          envidracados_id: 1,
+          sistemas_id: 1,
         },
       });
     }),

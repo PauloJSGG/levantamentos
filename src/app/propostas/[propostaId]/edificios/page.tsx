@@ -65,7 +65,7 @@ export default async function EdificioNovo({
         </tbody>
       </table>
       <h2 className="mb-4 text-2xl font-semibold">Criar edificio:</h2>
-      <form action={create}>
+      {/* <form action={create}>
         <div className="mb-4">
           <label
             htmlFor="propostaId"
@@ -119,7 +119,7 @@ export default async function EdificioNovo({
         >
           Submit
         </button>
-      </form>
+      </form> */}
     </>
   );
 }

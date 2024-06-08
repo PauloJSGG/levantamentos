@@ -90,7 +90,7 @@ export const authOptions: NextAuthOptions = {
 
         const isPasswordValid = await compare(
           credentials.password,
-          user.password,
+          user.password ? user.password : '',
         );
 
         if (!isPasswordValid) {
@@ -98,7 +98,7 @@ export const authOptions: NextAuthOptions = {
         }
 
         return {
-          id: user.id,
+          id: user.id.toString(),
           email: user.email ?? "",
           name: user.name ?? "",
           // randomKey: 'Hey cool'

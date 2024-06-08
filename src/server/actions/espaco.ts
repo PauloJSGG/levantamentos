@@ -17,25 +17,6 @@ const ACCEPTED_IMAGE_TYPES = [
   "image/webp",
 ];
 
-const imageSchema = z.object({
-  fotosEspaco: z
-    .any()
-    .refine((files) => files?.length >= 1, { message: "Image is required." })
-    .refine(
-      (files) =>
-        files.forEach((file: File) => ACCEPTED_IMAGE_TYPES.includes(file.type)),
-      {
-        message: ".jpg, .jpeg, .png and .webp files are accepted.",
-      },
-    )
-    .refine(
-      (files) => files.forEach((file: File) => file.size <= MAX_FILE_SIZE),
-      {
-        message: `Max file size is 5MB.`,
-      },
-    ),
-});
-
 // const validateImage = async (file: File) => {
 
 const saveImage = async (file: File) => {
@@ -52,16 +33,18 @@ const saveImage = async (file: File) => {
 
 export const create = async (formState: FormState, formData: FormData) => {
   const fotosEspaco = formData.getAll("fotosEspaco") as File[];
-  const espacoId = Number(formData.get("espacoId"));
 
   try {
     const filePaths = await Promise.all(fotosEspaco.map(saveImage));
 
     await api.espaco.create({
-      espacoId: Number(formData.get("espacoId")) as number,
+      propostaId: formData.get("propostaId") as string,
       designacao: formData.get("designacao") as string,
       descricao: formData.get("descricao") as string,
-      fotosEspaco: filePaths,
+      fotosEspaco: filePaths.map((path) => ({
+        caminhoRelativo: path,
+        tipo: "Espaco",
+      })),
     });
   } catch (err) {
     return toFormState("ERROR", "Ocorreu um erro");

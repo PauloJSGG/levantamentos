@@ -30,13 +30,7 @@ export const create = async (formState: FormState, formData: FormData) => {
       await writeFile(filePath, buffer);
     }
 
-    await api.foto.create({
-      edificio_id: edificio.id,
-      fotos: arrayOfFilePaths.map((filePath) => ({
-        caminhoRelativo: filePath,
-        tipo: "Edificio",
-      })),
-    });
+    await api.foto.createMany();
   } catch (error) {
     return toFormState("ERROR", "Erro ao criar edifício");
   }

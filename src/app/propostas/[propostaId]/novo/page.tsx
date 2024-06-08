@@ -35,7 +35,7 @@ export default async function PropostaNova({
     // api.post
     // Add your form submission logic here
   };
-  const numberOfEdificios = proposta?.edificios?.length;
+  const numberOfEdificios = proposta?.edificio?.length;
 
   if (!proposta) {
     return (

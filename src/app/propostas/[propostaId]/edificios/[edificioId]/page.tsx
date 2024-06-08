@@ -32,7 +32,7 @@ export default async function EdificioPage({
             <td className="border-b px-4 py-2">{edificio?.designacao}</td>
             <td className="border-b px-4 py-2">{edificio?.descricao}</td>
             <td className="border-b px-4 py-2">
-              {edificio?.espacos.map((espaco) => (
+              {edificio?.espaco.map((espaco) => (
                 <li key={edificio.id}>
                   <Link
                     href={`/propostas/${params.propostaId}/edificios/${edificio.id}/espacos/${espaco.id}`}

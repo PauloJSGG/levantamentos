@@ -1,5 +1,5 @@
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import { compare } from "bcrypt";
+import { compare } from "bcryptjs";
 import {
   getServerSession,
   type DefaultSession,

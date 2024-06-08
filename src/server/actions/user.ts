@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { api } from "~/trpc/server";
 import { getServerAuthSession } from "../auth";
 import { revalidatePath } from "next/cache";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 
 interface Credentials {
   name: string;
